@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../models')
+const db = require('../models');
+const passport = require('../config/ppCinfig')
 
 router.get('/signup', function(req, res) {
   res.render('auth/signup');
@@ -17,7 +18,15 @@ router.post(`/signup`, function(req, res) {
       password: req.body.password
     }
   }).then(function([user, created]){
-    created ? res.redirect('/') : res.redirect('/auth/signup');
+    if (created) {
+      passport.authenticate('local',  {
+        successRedirect: '/', 
+        successFlash: 'User logged in'
+      })(req, res)
+    } else {
+      req.flash('error', 'Email already exists')
+      res.redirect('/auth/signup')
+    }
   }).catch(function(err) {
     console.log(err)
     res.redirect('/auth/signup')
@@ -28,5 +37,18 @@ router.post(`/signup`, function(req, res) {
 router.get('/login', function(req, res) {
   res.render('auth/login');
 });
+
+router.post(`/login`, passport.authenticate('local', {
+  successRedirect: '/',
+  successFlash: 'You have logged in!',
+  failureRedirect: '/auth/login',
+  failureFlash: 'Invalid username or password'
+}))
+
+router.get(`/logout`, function(req, res) {
+  req.logout();
+  req.flash('success', 'you have been logged out!')
+  res.redirect('/');
+})
 
 module.exports = router;
