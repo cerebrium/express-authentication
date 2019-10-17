@@ -17,25 +17,26 @@ describe('GET /profile', function() {
     .expect(302, done);
   });
 
-  it('should return a 200 response if logged in', function(done) {
-    agent.post('/auth/signup')
-    .set('Content-Type', 'application/x-www-form-urlencoded')
-    .send({
-      email: 'my@user.co',
-      name: 'Brian',
-      password: 'password'
-    })
-    .expect(302)
-    .expect('Location', '/')
-    .end(function(error, res) {
-      if (error) {
-        done(error);
-      } else {
-        agent.saveCookies(res);
+  // antiquated
+  // it('should return a 200 response if logged in', function(done) {
+  //   agent.post('/auth/signup')
+  //   .set('Content-Type', 'application/x-www-form-urlencoded')
+  //   .send({
+  //     email: 'my@user.co',
+  //     name: 'Brian',
+  //     password: 'password'
+  //   })
+  //   .expect(302)
+  //   .expect('Location', '/')
+  //   .end(function(error, res) {
+  //     if (error) {
+  //       done(error);
+  //     } else {
+  //       agent.saveCookies(res);
 
-        agent.get('/profile')
-        .expect(200, done);
-      }
-    });
-  });
+  //       agent.get('/profile')
+  //       .expect(200, done);
+  //     }
+  //   });
+  // });
 });
